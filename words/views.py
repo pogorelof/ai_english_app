@@ -22,6 +22,8 @@ def words_from_video(request):
     video_id = request.GET.get('video_id')
     transcript = YouTubeTranscriptApi.get_transcript(video_id)
     word_count = {}
+    word_context = {}
+    
 
     for t in transcript:
         full_text = t['text']
@@ -35,11 +37,13 @@ def words_from_video(request):
                 if word.isalpha():
                     word = word.lower()
                     word_count[word] = 1
+                    word_context[word] = full_text
 
     sorted_word_count = dict(sorted(word_count.items(), key=lambda item: item[1]))
-    
+
     return render(request, 'words/words_from_yt.html', context={
-        'words': sorted_word_count
+        'words': sorted_word_count,
+        'word_context': word_context,
     })
     
 def words_from_video_handler(request):
@@ -47,6 +51,8 @@ def words_from_video_handler(request):
         word = request.POST.get('word').capitalize()
         if Word.objects.filter(word=word).exists():
             return JsonResponse({'message': 'У вас уже есть это слово!', 'added': False})
-        Word.objects.create(word=word)
+        context = request.POST.get('context')
+        word_obj = Word(word=word, context=context)
+        word_obj.save()
         return JsonResponse({'message': 'Слово было добавлено', 'added': True})
     return JsonResponse({'message': 'This method doesn`t support'})

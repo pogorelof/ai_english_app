@@ -1,4 +1,6 @@
 {% extends "base.html" %}
+
+{% load custom_filters %}
 {% block title %}Слова с ролика{% endblock title %}
 {% block main %}
 
@@ -9,7 +11,7 @@
         <hr>
         <div class="grid grid-cols-3 gap-2 text-center mt-4 font-serif text-lg">
             <p>Слово</p>
-            <p>Количество появлений</p>
+            <p>Контекст</p>
             <p>Добавить</p>
         </div>
 
@@ -17,8 +19,8 @@
                 {% for k, v in words.items %}
                 <div class="grid grid-cols-3 gap-2 text-center mt-4 font-serif text-lg {% if forloop.counter|divisibleby:2 == 0 %}bg-gray-100{% endif %} p-2 rounded">
                     <p>{{k}}</p>
-                    <p>{{v}}</p>
-                    <button data-word="{{ k }}"
+                    <p>{{ word_context|get_item:k }}</p>
+                    <button data-word="{{ k }}" data-context="{{ word_context|get_item:k }}"
                         class="add-word bg-green-500 hover:bg-green-600 text-white rounded font-sans font-medium text-sm place-content-center w-1/2 mx-auto">Добавить</button>
                 </div>
                 {% endfor %}
@@ -31,23 +33,31 @@
 <script>
     $('.add-word').click(function () {
         var word = $(this).data('word');
+        var context = $(this).data('context');
 
         $.ajax({
             url: '{% url "words:video_add_word" %}',
             type: 'POST',
             data: {
                 word: word,
+                context: context,
                 csrfmiddlewaretoken: '{{csrf_token}}'
             },
             success: function (response) {
                 var messageElement = $('#response-message');
                 messageElement.text(response.message)
-                messageElement.removeClass('bg-green-700', 'bg-red-700')
+                messageElement.removeClass('bg-green-700 bg-red-700')
                 if (response.added) {
                     messageElement.addClass('bg-green-700')
                 } else {
                     messageElement.addClass('bg-red-700')
                 }
+
+                anim_class = 'opacity-35 transition-opacity duration-500'
+                messageElement.addClass(anim_class);
+                setTimeout(function(){
+                    messageElement.removeClass(anim_class)
+                }, 500)
             }
         })
     })

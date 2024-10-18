@@ -7,6 +7,8 @@ class Word(models.Model):
     guessed = models.PositiveIntegerField(default=0)
     # Count of fail with translate
     wrong = models.PositiveIntegerField(default=0)
+    # Sentence where this word is present
+    context = models.CharField(max_length=255, null=True, blank=True)
     # True, if word was learned
     archive = models.BooleanField(default=False)
     added_at = models.DateTimeField(auto_now_add=True, db_index=True)
