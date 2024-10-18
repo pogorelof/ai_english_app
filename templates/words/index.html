@@ -1,0 +1,94 @@
+{% extends "base.html" %}
+{% load static %}
+
+{% block title %} Слова {% endblock title %}  
+{% block main %}
+
+<main class="grid grid-cols-2 gap-3 m-5">
+    <div class="bg-white rounded p-3 h-fit">
+        <p class="text-2xl font-serif text-center">Мои слова</p>
+        <div class="max-h-96 overflow-scroll space-y-3 mt-5">
+
+            <div class="font-serif text-xl grid grid-cols-4 gap-4">
+                <p>Слово</p>
+                <p>Перевод</p>
+                <p>Отгадано раз</p>
+            </div>
+
+            {% for obj in object_list %}
+            <div class="grid grid-cols-4 gap-4 flex items-center">
+                <p>{{ obj.word }}</p>
+                {% if obj.translation_to_ru == 'None' %}
+                <div class="group">
+                    <p class="bg-gray-200 text-gray-500 hover:bg-gray-100 hover:cursor-pointer text-center rounded w-8/12">?</p>
+                    <p class="hidden group-hover:block absolute bg-gray-50 p-2 rounded italic text-sm font-light">Попробуйте отгадать слово в игре</p>
+                </div>
+                {% else %}
+                <p>{{ obj.translation_to_ru }}</p>
+                {% endif %}
+                <p>{{ obj.guessed }}</p>
+                <a href="{% url 'words:delete_word' obj.pk %}" class="bg-red-700 p-1 rounded w-fit hover:bg-red-800 hover:scale-110"><img src="{% static 'svg/trash.svg' %}" class="w-6"></a>
+            </div>
+            {% endfor %}
+        </div>
+    </div>
+
+    <div class="bg-white rounded p-3 h-fit">
+        <p class="text-2xl font-serif text-center">Добавить слова</p>
+        <div class="flex flex-col text-center mt-5 space-y-3">
+            <div class="group flex flex-col">
+                <button class="bg-stone-400 hover:bg-stone-500 rounded text-white p-2 font-bold">
+                    Добавить свое слово
+                </button>
+                <div class="relative hidden group-focus-within:block top-1 bg-stone-400 rounded p-3 text-white text-sm">
+                    <form action="{% url "words:add_word" %}" method='post' class="text-base font-light space-x-5">
+                        {% csrf_token %}
+                        <label for="" class="font-semibold">
+                            Напишите английское слово
+                        </label>
+                        <input name='word' type="text" class="p-1 rounded text-black">
+                        <button type="submit" class="p-2 rounded bg-white hover:bg-gray-100 text-black font-semibold">Отправить</button>
+                    </form>
+                </div>
+            </div>
+
+            <div class="group flex flex-col">
+                <button class="bg-stone-400 hover:bg-stone-500 rounded text-white p-2 font-bold">
+                    Добавить с текста
+                </button>
+                <div class="relative hidden group-focus-within:block top-1 bg-stone-400 rounded p-3 text-white text-sm">
+                    <form action="" class="text-base font-light space-x-5">
+                        <label for="" class="font-semibold">
+                            Вставьте текст
+                        </label>
+                        <input type="text" class="p-1 rounded text-black">
+                        <button type="submit" class="p-2 rounded bg-white hover:bg-gray-100 text-black font-semibold">Отправить</button>
+                    </form>
+                </div>
+            </div>
+
+            <div class="group flex flex-col">
+                <button class="bg-red-500 hover:bg-red-600 rounded text-white p-2 font-bold">
+                    Добавить с YouTube видео
+                </button>
+                <div class="relative hidden group-focus-within:block top-1 bg-red-500 rounded p-3 text-white text-sm">
+                    <form action="{% url "words:words_from_video" %}" class="text-base font-light space-x-5">
+                        <label for="" class="font-semibold">
+                            Вставьте id видео
+                        </label>
+                        <div class="group/hint inline">
+                            <p class="inline w-fit bg-slate-400 hover:bg-slate-300 opacity-40 hover:cursor-pointer p-1 rounded">?</p>
+                            <p class="absolute hidden group-hover/hint:block left-72 bottom-12 opacity-80 bg-gray-200 text-black font-light text-xs p-2 rounded">
+                                Скопируйте строку после 'watch?v=' и до &(если имеется)
+                            </p>
+                        </div>
+                        <input type="text" class="p-1 rounded text-black" name='video_id'>
+                        <button type="submit" class="p-2 rounded bg-white hover:bg-gray-100 text-black font-semibold">Отправить</button>
+                    </form>
+                </div>
+            </div>
+        </div>
+    </div>
+</main>
+
+{% endblock main %}
