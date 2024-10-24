@@ -2,7 +2,7 @@
     <div class="space-x-2">
         <a href="{% url "home:home" %}" class="font-bold font-serif hover:text-gray-500">Главная</a>
         <a href="{% url "words:word_list" %}" class="font-bold font-serif hover:text-gray-500 ">Мои слова</a>
-        <a href="" class="font-bold font-serif hover:text-gray-500">Запоминания</a>
+        <a href="{% url "games:memorization" %}" class="font-bold font-serif hover:text-gray-500">Запоминания</a>
     </div>
     <a href="" class="flex items-center space-x-3 hover:bg-gray-100 hover:cursor-pointer p-2 rounded">
         <p class=" font-light">Никнейм</p>

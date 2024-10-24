@@ -6,8 +6,9 @@ from youtube_transcript_api import YouTubeTranscriptApi
 
 
 class WordListView(ListView):
-    model = Word
     template_name = 'words/index.html'
+    def get_queryset(self):
+        return Word.objects.filter(archive=False)
 
 def add_word(request):
     word = request.POST.get('word').capitalize()

@@ -19,10 +19,10 @@
             <div class="grid grid-cols-4 gap-4 flex items-center">
                 <p>{{ obj.word }}</p>
                 {% if obj.translation_to_ru == 'None' %}
-                <div class="group">
+                <a class="group" href="{% url "games:memorization" %}">
                     <p class="bg-gray-200 text-gray-500 hover:bg-gray-100 hover:cursor-pointer text-center rounded w-8/12">?</p>
                     <p class="hidden group-hover:block absolute bg-gray-50 p-2 rounded italic text-sm font-light">Попробуйте отгадать слово в игре</p>
-                </div>
+                </a>
                 {% else %}
                 <p>{{ obj.translation_to_ru }}</p>
                 {% endif %}
